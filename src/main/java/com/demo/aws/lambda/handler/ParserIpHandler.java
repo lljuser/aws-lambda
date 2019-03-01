@@ -4,20 +4,14 @@
 package com.demo.aws.lambda.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+
 
 /**
  *
@@ -29,8 +23,6 @@ public class ParserIpHandler implements RequestStreamHandler {
     JSONParser parser =new JSONParser();
 
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
-        LambdaLogger logger = context.getLogger();
-        logger.log("Loading Java Lambda handler of ProxyWithStream");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         JSONObject responseJson = new JSONObject();
@@ -47,7 +39,7 @@ public class ParserIpHandler implements RequestStreamHandler {
                 JSONObject headers = (JSONObject)request.get("headers");
 
                 //get user ip from header check proxy
-                String userIP=null;
+                String userIP="unknown";
                 if (headers.get("X-Forwarded-For") != null) {
                     userIP = (String)headers.get("X-Forwarded-For");
                 }
@@ -61,7 +53,15 @@ public class ParserIpHandler implements RequestStreamHandler {
                         userIP = (String)headers.get("WL-Proxy-Client-IP");
                     }
                 }
-                info.put("userIP",userIP);
+                if(userIP.length()>0 && userIP.indexOf(",")>0){
+                    String[] ipArr = userIP.split(",");
+                    info.put("userIP",ipArr[0]);
+                    info.put("apiGatewayIP",ipArr[ipArr.length-1]);
+
+                }else{
+                    info.put("userIP",userIP);
+                }
+
 
                 //get host and parser ip
                 if (headers.get("Host") != null) {
@@ -72,24 +72,25 @@ public class ParserIpHandler implements RequestStreamHandler {
 
             }
 
-            responseBody.put("input", request.toJSONString());
-            responseBody.put("data", info.toJSONString());
+            responseBody.put("data", info);
 
 
         } catch(ParseException pex) {
-            responseBody.put("data", pex);
+            responseBody.put("data", pex.getMessage());
         }
 
         JSONObject headerJson = new JSONObject();
         headerJson.put("x-custom-header", "this is my aws lambda demo");
+        headerJson.put("Access-Control-Allow-Origin","*");
 
         responseJson.put("headers", headerJson);
         responseJson.put("isBase64Encoded", false);
-        responseJson.put("body", responseBody.toString());
+        responseJson.put("body", responseBody.toJSONString());
 
-        logger.log(responseJson.toJSONString());
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
-        writer.write(responseJson.toJSONString());
+
+        writer.write(responseJson.toString());
+        writer.flush();
         writer.close();
 
     }

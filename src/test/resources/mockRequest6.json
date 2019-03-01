@@ -1,0 +1,21 @@
+{
+  "path": "/showip",
+  "headers": {
+    "User-Agent": "Amazon CloudFront",
+    "X-Forwarded-Proto": "https",
+    "useCloudFront": "true",
+    "Accept-Encoding": "gzip, deflate",
+    "X-Forwarded-Port": "443",
+    "X-Amzn-Trace-Id": "Root=1-5c7912f4-9644fed8f9f9a94d97acd6ab",
+    "Via": "1.1 2fdc135ee3fc62ca8028e67323f87aba.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "TYTM_KKIYMTloAhS3Q0pkAV0Ip9yTDHzkWUsjpuKoDT8YmDwsmvWbw==",
+    "Proxy-Client-IP": "183.192.28.195, 52.46.23.77",
+    "Postman-Token": "c1dc6dee-9876-44c8-8229-3aff4b2f93c4",
+    "cache-control": "no-cache",
+    "Content-Type": "application/json"
+  },
+  "pathParameters": null,
+  "isBase64Encoded": false,
+  "multiValueQueryStringParameters": null,
+
+}
