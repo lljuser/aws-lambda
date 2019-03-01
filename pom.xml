@@ -6,7 +6,7 @@
 
     <groupId>com.demo</groupId>
     <artifactId>aws-lambda</artifactId>
-    <version>3.9.0</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -96,6 +96,11 @@
                     <excludes>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.11.0</version>
             </plugin>
         </plugins>
     </build>
